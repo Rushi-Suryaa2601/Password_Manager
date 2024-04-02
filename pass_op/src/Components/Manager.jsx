@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react'
 import { useRef } from 'react'
 import { useState } from 'react'
+import { CiEdit } from "react-icons/ci";
+import { MdDelete,MdEdit } from "react-icons/md";
+import { RiEdit2Fill } from "react-icons/ri";
+import uuid4 from 'react-uuid';
 
 
 const Manager = () => {
@@ -32,11 +36,28 @@ const Manager = () => {
 
      const savePassword=() => { 
         // console.log(form)
-        setpasswordarray([...passwordarray,form])
-        localStorage.setItem("password",JSON.stringify([...passwordarray,form]))
-        console.log([...passwordarray,form])
+        setpasswordarray([...passwordarray,{...form,id:uuid4()}])
+        localStorage.setItem("password",JSON.stringify([...passwordarray,{...form,id:uuid4()}]))
+        setform({site:"",username:"",password:""})
+        console.log([...passwordarray,{...form,id:uuid4()}])
 
         
+      }
+      const deletePassword=(id) => { 
+        console.log("deleting id ")
+        let c=confirm("Do you really want to delete this password?")
+        if(c){
+
+            setpasswordarray(passwordarray.filter(item=>item.id!==id))
+            localStorage.setItem("password",JSON.stringify(passwordarray.filter(item=>item.id!==id)))
+        }
+
+        
+      }
+      const editPassword=(id) => { 
+        console.log("editing id ")
+        setform(passwordarray.filter(i=>i.id===id)[0])
+        setpasswordarray(passwordarray.filter(item=>item.id!==id))
       }
 
       const Handlechange=(e) => { 
@@ -70,7 +91,7 @@ const Manager = () => {
             <button onClick={savePassword} className='text-black flex justify-center items-center gap-1 bg-green-500 rounded-full w-fit px-4 py-2 hover:bg-green-400 border-2 border-green-800'>
                 <lord-icon src="https://cdn.lordicon.com/jgnvfzqg.json" trigger="hover">
                 </lord-icon>
-             Add Password</button>
+             Save Password</button>
         </div>
         <div className="passwords">
             <h2 className='font-serif text-2xl font-bold p-3'>Your Passwords</h2>
@@ -81,6 +102,7 @@ const Manager = () => {
                     <th className='py-2'>Site</th>
                     <th className='py-2'>Username</th>
                     <th className='py-2'>Passwords</th>
+                    <th className='py-2'>Actions</th>
                     </tr>
                 </thead>
                 <tbody className='bg-green-100'>
@@ -89,6 +111,17 @@ const Manager = () => {
                     <td className='text-center w-32 py-3 border border-white'><a href={item.site} target='_blank'>{item.site}</a></td>
                     <td className='text-center w-32 py-3 border border-white'>{item.username}</td>
                     <td className='text-center w-32 py-3 border border-white'>{item.password}</td>
+                    <td className='text-center w-32 py-3 border border-white '>
+                        <div className='flex justify-center items-center gap-4'>
+                                <span className='cursor-pointer'><RiEdit2Fill size={25} onClick={()=>editPassword(item.id)}  /></span>
+                            <span className='cursor-pointer'><lord-icon
+                            src="https://cdn.lordicon.com/wpyrrmcq.json"
+                                 trigger="hover" onClick={()=>deletePassword(item.id)}
+    >
+                        </lord-icon></span>
+                        </div>
+                    
+                    </td>
                     </tr>
                     })}
                    
