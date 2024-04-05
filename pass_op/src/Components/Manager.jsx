@@ -5,6 +5,8 @@ import { CiEdit } from "react-icons/ci";
 import { MdDelete,MdEdit } from "react-icons/md";
 import { RiEdit2Fill } from "react-icons/ri";
 import uuid4 from 'react-uuid';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Manager = () => {
@@ -36,10 +38,16 @@ const Manager = () => {
 
      const savePassword=() => { 
         // console.log(form)
-        setpasswordarray([...passwordarray,{...form,id:uuid4()}])
-        localStorage.setItem("password",JSON.stringify([...passwordarray,{...form,id:uuid4()}]))
-        setform({site:"",username:"",password:""})
-        console.log([...passwordarray,{...form,id:uuid4()}])
+        if(form.site.length >3 && form.username.length >3 &&form.password.length >3){
+            setpasswordarray([...passwordarray,{...form,id:uuid4()}])
+            localStorage.setItem("password",JSON.stringify([...passwordarray,{...form,id:uuid4()}]))
+            setform({site:"",username:"",password:""})
+            console.log([...passwordarray,{...form,id:uuid4()}])
+        
+        }
+        else{
+            alert("Please enter valid")
+        }
 
         
       }
@@ -50,6 +58,7 @@ const Manager = () => {
 
             setpasswordarray(passwordarray.filter(item=>item.id!==id))
             localStorage.setItem("password",JSON.stringify(passwordarray.filter(item=>item.id!==id)))
+           
         }
 
         
@@ -58,16 +67,20 @@ const Manager = () => {
         console.log("editing id ")
         setform(passwordarray.filter(i=>i.id===id)[0])
         setpasswordarray(passwordarray.filter(item=>item.id!==id))
+        
       }
 
       const Handlechange=(e) => { 
             setform({...form,[e.target.name]:e.target.value})
        }
+
+       
   return (
    <> 
-   <div className="absolute top-0 z-[-2] h-screen w-screen rotate-180 transform bg-green-100 bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]"></div>
+   
+   <div className="absolute top-0 z-[-2] h-full w-full rotate-180 transform bg-green-100 bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]"></div>
 
-    <div className="  mycontainer">
+    <div className="px-0  md:mycontainer min-h-[83.3vh] ">
         <h1 className='text-4xl font-bold text-center'>
         <span className='text-green-500'>&lt;</span>
             <span>Pass</span>
@@ -78,7 +91,7 @@ const Manager = () => {
         <div className='text-white flex flex-col p-4 gap-8 items-center'>
             <input required type="text" placeholder='Enter website url' name='site'  value={form.site} onChange={Handlechange} className='rounded-full border border-green-500 w-full text-black px-4 py-1 hover:border-orange-300 outline-none' />
 
-            <div className='flex w-full gap-8 justify-between '>
+            <div className='flex flex-col  md:flex-row w-full gap-8 justify-between '>
                 <input required type="text" placeholder='Enter Username' name='username' value={form.username} onChange={Handlechange} className='rounded-full border border-green-500 w-full text-black px-4 py-1 hover:border-orange-300 outline-none '  />
                 <div className='relative'>
                 <input ref={passwordref} required type="password" placeholder='Enter Password' name='password' value={form.password} onChange={Handlechange} className='rounded-full border border-green-500 w-full text-black px-4 py-1 hover:border-orange-300 outline-none' />
@@ -129,7 +142,10 @@ const Manager = () => {
             </table>
             }
         </div>
+        
    </div>
+   
+   
    </>
   )
 }
